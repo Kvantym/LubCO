@@ -1,11 +1,9 @@
-FROM jenkins/jenkins:lts
+FROM alpine:latest
 
-USER root
+RUN apk add --no-cache bash coreutils
 
-# Встановлюємо інструменти для побудови RPM та DEB
-RUN apt-get update && apt-get install -y \
-    rpm \
-    dpkg-dev \
-    && apt-get clean
+COPY count_files.sh /usr/local/bin/count_files.sh
 
-USER jenkins
+RUN chmod +x /usr/local/bin/count_files.sh
+
+CMD ["/usr/local/bin/count_files.sh"]
