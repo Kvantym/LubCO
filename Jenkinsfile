@@ -20,11 +20,11 @@ pipeline {
                     exit 1
                 fi
 
-                # Список встановлених пакетів для перевірки
-                echo "Currently installed packages:"
-                dpkg --get-selections
+                # Вивести змінні середовища для діагностики
+                echo "Environment variables:"
+                env
 
-                # Встановлення DEB пакета
+                # Встановлення DEB пакета з sudo
                 echo "Installing DEB package..."
                 sudo dpkg -i /var/jenkins_home/workspace/LubCO/countfiles_1.0-1_amd64.deb
 
@@ -48,3 +48,4 @@ pipeline {
         }
     }
 }
+
