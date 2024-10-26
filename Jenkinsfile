@@ -5,7 +5,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Клонування репозиторію
-                git 'https://github.com/Kvantym/LubCO'
+               git branch: 'main', url: 'https://github.com/Kvantym/LubCO'
+                
             }
         }
         
