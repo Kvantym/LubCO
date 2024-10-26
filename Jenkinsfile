@@ -9,19 +9,22 @@ pipeline {
             }
         }
 
-        stage('Install RPM Package') {
+        stage('Install DEB Package') {
             steps {
-                // Встановлення RPM пакета
+                // Встановлення DEB пакета
                 sh '''
-                # Перевірте, чи RPM встановлено
-                if ! command -v rpm &> /dev/null
+                # Перевірте, чи dpkg встановлено
+                if ! command -v dpkg &> /dev/null
                 then
-                    echo "rpm could not be found, please install it."
+                    echo "dpkg could not be found, please install it."
                     exit 1
                 fi
                 
-                # Використовуйте правильний шлях до RPM пакета
-                rpm -ivh /var/jenkins_home/workspace/LubCO/countfiles-1.0-1.x86_64.rpm
+                # Встановлення DEB пакета
+                sudo dpkg -i /var/jenkins_home/workspace/LubCO/countfiles_1.0-1_amd64.deb
+                
+                # Виправлення залежностей, якщо потрібно
+                sudo apt-get install -f
                 '''
             }
         }
@@ -30,9 +33,10 @@ pipeline {
             steps {
                 // Ваш скрипт для підрахунку файлів
                 sh '''
-                # Команди для підрахунку файлів
                 echo "Counting files..."
-                ls -l | wc -l
+                # Підрахунок файлів у каталозі
+                file_count=$(ls -1 | wc -l)
+                echo "Total files: $file_count"
                 '''
             }
         }
