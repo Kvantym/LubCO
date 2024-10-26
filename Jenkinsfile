@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Вказуємо каталог, в якому потрібно підрахувати файли
-                    def directoryPath = '/mnt/f/EMPI/EMPI6' // Переконайтесь, що шлях правильний для Linux
+                    def directoryPath = '/mnt/f/EMPI' // Переконайтесь, що шлях правильний для Linux
                     
                     // Підрахунок файлів (для Linux)
                     def fileCount = sh(script: "find '${directoryPath}' -type f | wc -l", returnStdout: true).trim()
