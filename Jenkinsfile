@@ -1,9 +1,24 @@
 pipeline {
-    agent any // Зміна на "any" для перевірки
+    agent any
     stages {
-        stage('Test') {
+        stage('Checkout') {
             steps {
-                echo 'Hello, World!'
+                // Клонування коду з репозиторію
+                checkout scm
+            }
+        }
+        stage('Count Files') {
+            steps {
+                script {
+                    // Вказуємо каталог, в якому потрібно підрахувати файли
+                    def directoryPath = 'F:\\EMPI\\EMPI6' // Вказано правильний шлях
+                    
+                    // Підрахунок файлів (для Windows)
+                    def fileCount = bat(script: "dir /b /a-d '${directoryPath}' | find /c /v \"\"", returnStdout: true).trim()
+                    
+                    // Вивід кількості файлів на консоль
+                    echo "Number of files in '${directoryPath}': ${fileCount}"
+                }
             }
         }
     }
