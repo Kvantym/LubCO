@@ -1,24 +1,16 @@
-# Використовуємо офіційний образ Jenkins
-FROM jenkins/jenkins:lts
 
-# Перемикаємось на користувача root для встановлення додаткових пакетів
-USER root
+FROM ubuntu:latest
 
-# Встановлюємо необхідні пакети для Jenkins
-RUN apt-get update && apt-get install -y \
-    git \
-    maven \
-    default-jdk \
-    && apt-get clean
+RUN apt-get update && \
+    apt-get install -y findutils && \
+    apt-get clean
 
-# Повертаємось до користувача jenkins
-USER jenkins
+    COPY count_files.sh /usr/local/bin/count_files.sh
 
-# Налаштовуємо середовище Jenkins
-ENV JENKINS_HOME=/var/jenkins_home
 
-# Відкриваємо порт для Jenkins
-EXPOSE 8080
 
-# Запускаємо Jenkins
-ENTRYPOINT ["jenkins.sh"]
+RUN chmod +x /usr/local/bin/count_files.sh
+
+WORKDIR /etc
+
+CMD ["/usr/local/bin/count_files.sh"]
