@@ -1,22 +1,88 @@
 pipeline {
     agent any
+    
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+        
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t my-jenkins-builder .'
+                script {
+                    docker.build('sysprog-image:latest')
+                }
             }
         }
-        stage('Run Script in Docker') {
+        
+        stage('Build Package') {
             steps {
-                echo 'Running script in Docker container...'
-                sh 'docker run --rm my-jenkins-builder bash /usr/local/bin/count_files.sh || (echo "Script failed" && exit 1)'
+                script {
+                    docker.image('sysprog-image:latest').inside('--entrypoint=""') {
+                        sh 'mkdir -p build'
+                        sh '''
+                            cd build
+                            mkdir -p sysprog_1.0-1/DEBIAN
+                            echo "Package: sysprog" > sysprog_1.0-1/DEBIAN/control
+                            echo "Version: 1.0-1" >> sysprog_1.0-1/DEBIAN/control
+                            echo "Section: base" >> sysprog_1.0-1/DEBIAN/control
+                            echo "Priority: optional" >> sysprog_1.0-1/DEBIAN/control
+                            echo "Architecture: all" >> sysprog_1.0-1/DEBIAN/control
+                            echo "Maintainer: Your Name <your.email@example.com>" >> sysprog_1.0-1/DEBIAN/control
+                            echo "Description: Sample SysProg Package" >> sysprog_1.0-1/DEBIAN/control
+                            mkdir -p sysprog_1.0-1/usr/local/bin
+                            cp /usr/local/bin/count_files.sh sysprog_1.0-1/usr/local/bin/
+                            dpkg-deb --build sysprog_1.0-1
+                        '''
+                        // Завжди будуємо RPM
+                        sh '''
+                            cd build
+                            alien -r --scripts sysprog_1.0-1.deb
+                            ls -la
+                            find . -name "*.rpm"
+                        '''
+                    }
+                }
             }
+        }
+        
+        stage('Install Package') {
+            steps {
+                script {
+                    docker.image('sysprog-image:latest').inside('--entrypoint=""') {
+                        sh '''
+                            cd build
+                            ls -la
+                            RPM_FILE=$(find . -name "*.rpm")
+                            if [ -n "$RPM_FILE" ]; then
+                                rpm -ivh $RPM_FILE
+                            else
+                                echo "RPM file not found"
+                                exit 1
+                            fi
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Execute Script') {
+            steps {
+                script {
+                    docker.image('sysprog-image:latest').inside('--entrypoint=""') {
+                        sh 'ls -la /usr/local/bin'
+                        sh 'cat /usr/local/bin/count_files.sh'
+                        sh '/usr/local/bin/count_files.sh'
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
         }
     }
 }
