@@ -12,9 +12,11 @@ pipeline {
             }
         }
         stage('Run Script in Docker') {
-            steps {
-                sh 'docker run --rm my-jenkins-builder bash -c "/path/to/your/script.sh"'
-            }
-        }
+    steps {
+        echo 'Running script in Docker container...'
+        sh 'docker run --rm my-jenkins-builder bash /usr/local/bin/count_files.sh'
+    }
+}
+
     }
 }
