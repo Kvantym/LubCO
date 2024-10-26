@@ -38,12 +38,13 @@ pipeline {
 
         stage('Count Files') {
             steps {
-                // Ваш скрипт для підрахунку файлів
+                // Виконання скрипта count_files.sh
                 sh '''
-                echo "Counting files in the current directory..."
-                # Підрахунок файлів у каталозі
-                file_count=$(ls -1 | wc -l)
-                echo "Total files: $file_count"
+                echo "Counting files using count_files.sh..."
+                # Дайте права на виконання скрипту
+                chmod +x count_files.sh
+                # Запустіть скрипт
+                ./count_files.sh
                 '''
             }
         }
