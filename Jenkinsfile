@@ -1,77 +1,23 @@
 pipeline {
-    agent any
-    
+    agent {
+        docker {
+            image 'count-files-pipeline' // Назва вашого образу
+            args '-v C:/Users/makss/OneDrive/Documents/my-files:/data' // Мапа для доступу до файлів на хості
+        }
+    }
     stages {
-        stage('Start') {
+        stage('Run count_files.sh') {
             steps {
                 script {
-                    echo "Pipeline запущено."
-                }
-            }
-        }
-        
-        stage('Checkout') {
-            steps {
-                script {
-                    echo "Починаємо Checkout..."
-                    checkout scm
-                    echo "Checkout завершено."
-                }
-            }
-        }
-        
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo "Починаємо будівництво Docker-образу..."
-                    // Ваша команда для будівництва образу
-                    echo "Docker-образ побудовано (імітація)."
-                }
-            }
-        }
-        
-        stage('Build Package') {
-            steps {
-                script {
-                    echo "Починаємо будівництво пакету..."
-                    echo "Структура пакету створена (імітація)."
-                    echo "Пакет побудовано (імітація)."
-                }
-            }
-        }
-        
-        stage('Install Package') {
-            steps {
-                script {
-                    echo "Спробуємо встановити пакет..."
-                    echo "Пакет встановлено (імітація)."
-                }
-            }
-        }
-        
-        stage('Execute Script') {
-            steps {
-                script {
-                    echo "Виконуємо скрипт..."
-                    echo "Скрипт виконано (імітація)."
-                }
-            }
-        }
-        
-        stage('Finish') {
-            steps {
-                script {
-                    echo "Pipeline завершено."
+                    // Запустіть ваш скрипт, вказуючи на шлях /data
+                    sh '/usr/local/bin/count_files.sh /data'
                 }
             }
         }
     }
-    
     post {
         always {
-            echo "Очищення робочого простору..."
-            cleanWs()
-            echo "Робочий простір очищено."
+            echo 'Pipeline completed.'
         }
     }
 }
