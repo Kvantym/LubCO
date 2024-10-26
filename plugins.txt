@@ -1,4 +1,0 @@
-git
-pipeline
-docker-workflow
- 
