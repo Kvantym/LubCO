@@ -26,7 +26,7 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
 RUN usermod -aG docker jenkins
 
 # Копіюємо скрипт count_files.sh в образ
-COPY countscript/count_files.sh /usr/local/bin/count_files.sh
+COPY /mnt/wsl.localhost/Ubuntu-22.04/usr/local/bin/count_files.sh /usr/local/bin/count_files.sh
 
 # Змінюємо права доступу до скрипта, щоб його можна було виконувати
 RUN chmod +x /usr/local/bin/count_files.sh
