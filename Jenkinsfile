@@ -15,7 +15,7 @@ pipeline {
         stage('Run Script in Docker') {
             steps {
                 echo 'Running script in Docker container...'
-                sh 'docker run --rm my-jenkins-builder bash /usr/local/bin/count_files.sh'
+                sh 'docker run --rm my-jenkins-builder bash /usr/local/bin/count_files.sh || (echo "Script failed" && exit 1)'
             }
         }
     }
