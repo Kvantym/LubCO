@@ -15,7 +15,7 @@ pipeline {
                 // Встановлення RPM пакета
                 sh '''
                 # Використовуйте правильний шлях до RPM пакета
-                sudo rpm -ivh /mnt/c/wsl.localhost/Ubuntu-22.04/home/kvantym/rpmbuild/RPMS/x86_64/countfiles-1.0-1.x86_64.rpm
+                 rpm -ivh /mnt/c/wsl.localhost/Ubuntu-22.04/home/kvantym/rpmbuild/RPMS/x86_64/countfiles-1.0-1.x86_64.rpm
                 '''
             }
         }
