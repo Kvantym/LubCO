@@ -1,23 +1,32 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                // Клонування репозиторію
+                git 'https://github.com/Kvantym/LubCO'
             }
         }
+        
+        stage('Install RPM Package') {
+            steps {
+                // Встановлення RPM пакета
+                sh '''
+                # Використовуйте правильний шлях до RPM пакета
+                sudo rpm -ivh /mnt/c/wsl.localhost/Ubuntu-22.04/home/kvantym/rpmbuild/RPMS/x86_64/countfiles-1.0-1.x86_64.rpm
+                '''
+            }
+        }
+
         stage('Count Files') {
             steps {
-                script {
-                    // Вказуємо каталог, в якому потрібно підрахувати файли
-                    def directoryPath = '/mnt/f/EMPI' // Переконайтесь, що шлях правильний для Linux
-                    
-                    // Підрахунок файлів (для Linux)
-                    def fileCount = sh(script: "find '${directoryPath}' -type f | wc -l", returnStdout: true).trim()
-                    
-                    // Вивід кількості файлів на консоль
-                    echo "Number of files in '${directoryPath}': ${fileCount}"
-                }
+                // Ваш скрипт для підрахунку файлів
+                sh '''
+                # Команди для підрахунку файлів
+                echo "Counting files..."
+                ls -l | wc -l
+                '''
             }
         }
     }
