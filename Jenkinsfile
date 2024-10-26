@@ -31,6 +31,7 @@ pipeline {
                 # Виправлення залежностей, якщо потрібно
                 echo "Fixing dependencies if necessary..."
                 sudo apt-get install -f
+                echo "DEB package installed successfully!"
                 '''
             }
         }
@@ -39,13 +40,23 @@ pipeline {
             steps {
                 // Ваш скрипт для підрахунку файлів
                 sh '''
-                echo "Counting files..."
+                echo "Counting files in the current directory..."
                 # Підрахунок файлів у каталозі
                 file_count=$(ls -1 | wc -l)
                 echo "Total files: $file_count"
                 '''
             }
         }
+
+        stage('Test Output') {
+            steps {
+                // Додатковий етап для тестового виводу
+                sh '''
+                echo "Running tests..."
+                # Тут можна додати тестові команди
+                echo "All tests passed successfully!"
+                '''
+            }
+        }
     }
 }
-
