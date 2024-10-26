@@ -1,0 +1,79 @@
+name: Build RPM and DEB Packages
+
+on:
+  push:
+    branches:
+      - main 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          sudo apt update
+          sudo apt install -y rpm dpkg-dev
+
+      - name: Build RPM package
+        run: |
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          cp -r count_files.sh ~/rpmbuild/SOURCES/
+
+          cat <<EOL > ~/rpmbuild/SPECS/count_files.spec
+          Name: count_files
+          Version: 1.0
+          Release: 1%{?dist}
+          Summary: Example script for RPM packaging
+          License: MIT
+          Source0: %{name}.sh
+
+          %description
+          Example Bash script packaged as an RPM.
+
+          %prep
+
+          %build
+
+          %install
+          install -Dm755 %{SOURCE0} %{buildroot}/usr/local/bin/count_files.sh
+
+          %files
+          /usr/local/bin/count_files.sh
+
+          %changelog
+          * Tue Oct 24 2024 Maintainer <maintainer@example.com> - 1.0-1
+          - Initial package
+          EOL
+          rpmbuild -ba ~/rpmbuild/SPECS/count_files.spec
+
+      - name: Build DEB package
+        run: |
+          mkdir -p count_files_deb/DEBIAN
+          mkdir -p count_files_deb/usr/local/bin
+          cp count_files.sh count_files_deb/usr/local/bin/
+
+          cat <<EOL > count_files_deb/DEBIAN/control
+          Package: count-files
+          Version: 1.0
+          Section: base
+          Priority: optional
+          Architecture: all
+          Maintainer: Maintainer <maintainer@example.com>
+          Description: Example script for DEB packaging
+          EOL
+          dpkg-deb --build count_files_deb
+
+      - name: Upload RPM and DEB packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            ~/rpmbuild/RPMS/x86_64/count_files-1.0-1.x86_64.rpm
+            ./count_files_deb.deb
