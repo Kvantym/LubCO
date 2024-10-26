@@ -19,11 +19,17 @@ pipeline {
                     echo "dpkg could not be found, please install it."
                     exit 1
                 fi
-                
+
+                # Список встановлених пакетів для перевірки
+                echo "Currently installed packages:"
+                dpkg --get-selections
+
                 # Встановлення DEB пакета
+                echo "Installing DEB package..."
                 sudo dpkg -i /var/jenkins_home/workspace/LubCO/countfiles_1.0-1_amd64.deb
-                
+
                 # Виправлення залежностей, якщо потрібно
+                echo "Fixing dependencies if necessary..."
                 sudo apt-get install -f
                 '''
             }
