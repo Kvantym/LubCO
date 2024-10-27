@@ -3,7 +3,7 @@ name: Docker Pipeline
 on:
   push:
     branches:
-      - main  # Змінити на вашу основну гілку
+      - main  
 
 jobs:
   build:
