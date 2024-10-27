@@ -3,7 +3,7 @@ name: Build RPM and DEB Packages
 on:
   push:
     branches:
-      - main  # Змініть на вашу основну гілку
+      - main  
   pull_request:
     branches:
       - main
