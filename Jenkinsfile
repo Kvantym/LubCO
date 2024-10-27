@@ -9,7 +9,7 @@ pipeline {
         }
 
         // Розкоментуйте наступний блок, коли ви будете впевнені, що все інше працює
-        /*
+        
         stage('Install DEB Package') {
             steps {
                 sh '''
@@ -31,7 +31,7 @@ pipeline {
                 '''
             }
         }
-        */
+        
 
         stage('Count Files') {
             steps {
